@@ -1,0 +1,232 @@
+﻿@model IEnumerable<JobApplicationTracker.Models.JobApplication>
+
+@{
+    ViewData["Title"] = "Job Applications";
+}
+<div class="container mt-4">
+
+    <h1 class="mb-4">Job Application Dashboard</h1>
+
+    <div class="row g-3">
+
+        <!-- Total Applications -->
+        <div class="col-md-4">
+            <div class="card text-black big-primary  shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title">Total Applications</h5>
+                    <h2>@ViewBag.TotalApplications</h2>
+                </div>
+            </div>
+        </div>
+
+        <!-- Applied -->
+        <div class="col-md-4">
+            <div class="card text-black bg-info shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title">Applied</h5>
+                    <h2>@ViewBag.Applied</h2>
+                </div>
+            </div>
+        </div>
+
+        <!-- Interviews -->
+        <div class="col-md-4">
+            <div class="card text-black bg-success shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title">Interviews</h5>
+                    <h2>@ViewBag.Interviews</h2>
+                </div>
+            </div>
+        </div>
+
+        <!-- Assessments -->
+        <div class="col-md-4">
+            <div class="card text-dark bg-warning  shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title">Assessments</h5>
+                    <h2>@ViewBag.Assessments</h2>
+                </div>
+            </div>
+        </div>
+
+        <!-- Offers -->
+        <div class="col-md-4">
+            <div class="card text-black bg-success shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title">Offers</h5>
+                    <h2>@ViewBag.Offers</h2>
+                </div>
+            </div>
+        </div>
+
+        <!-- Rejected -->
+        <div class="col-md-4">
+            <div class="card text-black bg-danger shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title">Rejected</h5>
+                    <h2>@ViewBag.Rejected</h2>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+</div>
+<h1>Job Applications</h1>
+
+<p>
+    <a asp-action="Create" class="btn btn-primary">
+        Add Application
+    </a>
+</p>
+<div class="card shadow-sm mb-4">
+    <div class="card-body">
+
+        <h5 class="card-title">Search & Filter</h5>
+
+        <form asp-action="Index" method="get">
+
+            <div class="row g-3">
+
+                <div class="col-md-6">
+                    <label class="form-label">Search</label>
+
+                    <input type="text"
+                           name="searchString"
+                           value="@ViewBag.SearchString"
+                           class="form-control"
+                           placeholder="Search company or position..." />
+                </div>
+
+                <div class="col-md-4">
+                    <label class="form-label">Status</label>
+
+                    <select name="statusFilter" class="form-control">
+
+                        <option value="">All Statuses</option>
+
+                        <option value="Applied"
+                                selected="@(ViewBag.StatusFilter == "Applied")">
+                            Applied
+                        </option>
+
+                        <option value="Interview"
+                                selected="@(ViewBag.StatusFilter == "Interview")">
+                            Interview
+                        </option>
+
+                        <option value="Assessment"
+                                selected="@(ViewBag.StatusFilter == "Assessment")">
+                            Assessment
+                        </option>
+
+                        <option value="Offer"
+                                selected="@(ViewBag.StatusFilter == "Offer")">
+                            Offer
+                        </option>
+
+                        <option value="Rejected"
+                                selected="@(ViewBag.StatusFilter == "Rejected")">
+                            Rejected
+                        </option>
+
+                    </select>
+                </div>
+
+                <div class="col-md-2 d-flex align-items-end">
+
+                    <button type="submit"
+                            class="btn btn-primary w-100">
+                        Search
+                    </button>
+
+                </div>
+
+            </div>
+
+        </form>
+
+    </div>
+</div>
+
+<div class="table-responsive">
+    <table class="table table-hover align-middle">
+    <thead>
+        <tr>
+            <th>Company</th>
+            <th>Position</th>
+            <th>Date Applied</th>
+            <th>Status</th>
+            <th>Location</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+
+    <tbody>
+        @foreach (var application in Model)
+        {
+            <tr>
+                <td>@application.Company</td>
+
+                <td>@application.Position</td>
+
+                <td>
+                    @(application.DateApplied?.ToString("dd/MM/yyyy") ?? "-")
+                </td>
+
+                <td>
+                    @if (application.Status == "Applied")
+                    {
+                        <span class="badge bg-info">Applied</span>
+                    }
+                    else if (application.Status == "Interview")
+                    {
+                        <span class="badge bg-success">Interview</span>
+                    }
+                    else if (application.Status == "Assessment")
+                    {
+                        <span class="badge bg-warning text-dark">Assessment</span>
+                    }
+                    else if (application.Status == "Offer")
+                    {
+                        <span class="badge bg-success">Offer</span>
+                    }
+                    else if (application.Status == "Rejected")
+                    {
+                        <span class="badge bg-danger">Rejected</span>
+                    }
+                    else
+                    {
+                        <span class="badge bg-secondary">@application.Status</span>
+                    }
+                </td>
+                    
+
+                <td>
+                    @(application.Location ?? "-")
+                </td>
+
+                <td>
+                    <a asp-action="Details"
+                       asp-route-id="@application.Id"
+                       class="btn btn-info btn-sm">
+                        Details
+                    </a>
+
+                    <a asp-action="Edit"
+                       asp-route-id="@application.Id"
+                       class="btn btn-warning btn-sm">
+                        Edit
+                    </a>
+
+                    <a asp-action="Delete"
+                       asp-route-id="@application.Id"
+                       class="btn btn-danger btn-sm">
+                        Delete
+                    </a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+</div>
